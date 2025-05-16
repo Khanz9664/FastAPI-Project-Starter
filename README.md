@@ -85,7 +85,7 @@ Authorization: Bearer <access_token>
 
 # Project Structure 🗂️
 ```
-fastapi-project/
+FastAPI Project Starter/
 ├── app/               # Main application code
 │   ├── core/         # Configuration settings
 │   ├── database/     # Database connection & models
