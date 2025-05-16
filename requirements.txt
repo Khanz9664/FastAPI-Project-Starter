@@ -1,0 +1,8 @@
+fastapi>=0.68.0
+uvicorn>=0.15.0
+sqlalchemy>=1.4.0
+asyncpg>=0.24.0
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+python-dotenv
