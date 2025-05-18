@@ -134,4 +134,8 @@ docker-compose -f docker-compose.prod.yml up --build
 # License 📄
 - This project is licensed under the MIT License.
 
-Made with ❤️ by [Shahid Ul Islam] 
+Made with ❤️ by ## **Shahid Ul Islam** 
+
+_Machine Learning & Data Science Enthusiast_
+
+
