@@ -10,10 +10,11 @@ def test_read_main():
 
 def test_create_user():
     user_data = {
-        "email": "test@example.com",
+        "email": "test2@example.com",
         "password": "secret",
         "full_name": "Test User"
     }
     response = client.post("/api/users/", json=user_data)
     assert response.status_code == 200
     assert "email" in response.json()
+
