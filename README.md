@@ -1,141 +1,123 @@
 # FastAPI Project Starter 🚀
 
-A production-ready FastAPI template with authentication, database integration, and Docker support.
-
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 ## Features ✨
+- JWT Authentication & Authorization
+- Async PostgreSQL with SQLAlchemy 1.4+
+- Docker & Docker Compose ready
+- Swagger & ReDoc documentation
+- Pytest integration with test coverage
+- Secure password hashing (bcrypt)
+- Modular project structure with:
+  - Core configuration
+  - Database models
+  - Dependency injection
+  - Routers for API endpoints
+  - Schemas for data validation
 
-- ✅ JWT Authentication & Authorization
-- 🐘 Async PostgreSQL with SQLAlchemy 1.4+
-- 📦 Docker & Docker Compose ready
-- 📄 Swagger & ReDoc documentation
-- 🧪 Pytest integration
-- 🔒 Secure password hashing
-- 🧩 Modular project structure
-- 🌐 CORS Middleware configured
-- 📈 Production-ready configuration
-- 🔄 Async database operations
+## Project Structure 🗂️
+```
+project/
+├── app/
+│   ├── core/        # Configuration and security
+│   ├── database/    # Database models and sessions
+│   ├── dependencies/ # Authentication and utilities
+│   ├── routers/     # API endpoints (users, auth, etc)
+│   ├── schemas/   # Pydantic models
+│   └── main.py      # Application entry point
+├── tests/           # Unit and integration tests
+├── migrations/      # Alembic migration scripts
+├── Dockerfile       # Container configuration
+└── docker-compose.yml # Multi-container setup
+```
 
-## Installation 📥
+## New/Updated Sections
 
-### Prerequisites
-- Python 3.9+
-- PostgreSQL
-- Docker (optional)
-
-### Local Setup
+### Database Migrations
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/fastapi-project.git
-cd fastapi-project
+# Initialize migrations
+alembic init -t async migrations
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/MacOS
-venv\Scripts\activate  # Windows
+# Create new migration
+alembic revision -m "create_users_table" --autogenerate
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Set environment variables
-cp .env.example .env
-# Update .env with your values
-
-# Run database migrations (Alembic example)
+# Upgrade database
 alembic upgrade head
-
-# Start server
-uvicorn app.main:app --reload
-```
-# Docker Setup
-```docker-compose up --build```
-# API Documentation 📚
-- Swagger UI: [http://localhost:8000/api/docs](https://swagger.io/docs/)
-- ReDoc: http://localhost:8000/api/redoc
-
-Usage Examples 🛠️
-
-- Create User
-```
-POST /api/users/
-Content-Type: application/json
-
-{
-  "email": "user@example.com",
-  "password": "secret123",
-  "full_name": "John Doe"
-}
 ```
 
-- Authentication
-```
-POST /api/auth/token
-Content-Type: application/x-www-form-urlencoded
-username=user@example.com&password=secret123
-```
-
-- Access Protected Route
-```
-GET /api/users/me
-Authorization: Bearer <access_token>
-```
-
-# Project Structure 🗂️
-```
-FastAPI Project Starter/
-├── app/               # Main application code
-│   ├── core/         # Configuration settings
-│   ├── database/     # Database connection & models
-│   ├── dependencies/ # Auth and other dependencies
-│   ├── routers/      # API endpoint controllers
-│   ├── schemas/      # Pydantic models
-│   ├── utils/        # Helper functions
-│   └── main.py       # Application entry point
-├── tests/            # Test cases
-├── migrations/       # Database migration scripts
-├── Dockerfile        # Container configuration
-└── docker-compose.yml# Multi-container setup
-```
-
-# Environment Variables ⚙️
-- Create .env file with following variables:
-```
+### Environment Variables
+Add these to your `.env` file:
+```env
 DATABASE_URL=postgresql+asyncpg://user:password@localhost/dbname
 SECRET_KEY=your-secret-key-here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+TEST_DATABASE_URL=postgresql://test_user:test_password@localhost/test_db
 ```
 
-# Running Tests 🧪
-```
-pytest tests/
+### API Endpoints
+**Authentication**
+```bash
+POST /api/auth/token
+Content-Type: application/x-www-form-urlencoded
 ```
 
-# Deployment 🚀
-- Production Server
+**Users Management**
+```bash
+POST /api/users/ 
+Content-Type: application/json
+{
+  "email": "user@example.com",
+  "password": "securepassword",
+  "full_name": "John Doe"
+}
 ```
-uvicorn app.main:app --host 0.0.0.0 --port 80 --workers 4
+
+### Testing
+```bash
+# Run tests with coverage
+pytest --cov=app tests/
+
+# Run specific test file
+pytest tests/test_main.py
 ```
-- With Docker
-```
+
+### Production Deployment
+```bash
+# Using Docker
 docker-compose -f docker-compose.prod.yml up --build
+
+# Gunicorn with Uvicorn workers
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:80
 ```
 
-# Contributing 🤝
-- Fork the repository
-- Create your feature branch (git checkout -b feature/amazing-feature)
-- Commit your changes (git commit -m 'Add some amazing feature')
-- Push to the branch (git push origin feature/amazing-feature)
-- Open a Pull Request
+## Security Enhancements
+- Password hashing with bcrypt (salt rounds: 12)
+- Rate limiting on authentication endpoints
+- CORS configured with allowed origins
+- Security headers middleware included
 
-# License 📄
-- This project is licensed under the MIT License.
+---
 
-Made with ❤️ by **Shahid Ul Islam** 
+### 📫 Connect with Me
 
-_Machine Learning & Data Science Enthusiast_
-
-GitHub: [http://github.com/Khanz9664](http://github.com/Khanz9664)
+<p align="center">
+  <a href="https://instagram.com/shaddy9664">
+    <img src="https://img.shields.io/badge/Instagram-%23E4405F.svg?logo=Instagram&logoColor=white" alt="Instagram"/>
+  </a>
+  <a href="https://linkedin.com/in/shahid-ul-islam-13650998">
+    <img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?logo=linkedin&logoColor=white" alt="LinkedIn"/>
+  </a>
+  <a href="https://x.com/Shaddy9664">
+    <img src="https://img.shields.io/badge/X-black.svg?logo=X&logoColor=white" alt="X"/>
+  </a>
+  <a href="https://khanz9664.github.io/portfolio/">
+    <img src="https://img.shields.io/badge/Portfolio-green" alt="Portfolio"/>
+  </a>
+  <a href="https://github.com/Khanz9664">
+    <img src="https://img.shields.io/badge/Github-red" alt="Github"/>
+  </a>
+</p>
