@@ -10,7 +10,7 @@ def test_read_main():
 
 def test_create_user():
     user_data = {
-        "email": "test2@example.com",
+        "email": "test111@example.com",
         "password": "secret",
         "full_name": "Test User"
     }

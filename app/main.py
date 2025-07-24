@@ -2,9 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import users, items
 from app.core.config import settings
-from fastapi import APIRouter
-from app.database import Base, engine
-import asyncio
+from app.database import Base, engine, connect, disconnect  # ✅ Correct imports
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -33,12 +31,12 @@ async def read_main():
 @app.on_event("startup")
 async def startup_db():
     """Initialize database connection and create tables on startup"""
-    # Create tables if they do not exist
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-    await database.connect()
+    await connect()  # ✅ Use imported function
 
 @app.on_event("shutdown")
 async def shutdown_db():
     """Close database connection on shutdown"""
-    await database.disconnect()
+    await disconnect()  # ✅ Use imported function
+
