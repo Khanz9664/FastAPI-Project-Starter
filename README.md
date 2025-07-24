@@ -1,55 +1,64 @@
+Thank you for pointing that out! You are correct—if the repository does not contain a `migrations` directory or Alembic migration scripts, those sections should not be included in the README.md. The README should accurately reflect the actual structure and features present in your codebase.
+
+Let me provide a revised README.md draft that closely matches your repo’s real structure and implementation:
+
+---
+
 # FastAPI Project Starter 🚀
 
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-## Features ✨
-- JWT Authentication & Authorization
-- Async PostgreSQL with SQLAlchemy 1.4+
-- Docker & Docker Compose ready
-- Swagger & ReDoc documentation
-- Pytest integration with test coverage
+A production-ready FastAPI template featuring JWT authentication, async PostgreSQL integration, Docker support, modular architecture, and built-in testing. Designed for scalable and secure API development.
+
+---
+
+## Features
+
+- JWT authentication & authorization
+- Async PostgreSQL with SQLAlchemy
+- Docker & Docker Compose support
+- Interactive API docs (Swagger & ReDoc)
+- Pytest integration for unit testing
 - Secure password hashing (bcrypt)
-- Modular project structure with:
-  - Core configuration
-  - Database models
-  - Dependency injection
-  - Routers for API endpoints
-  - Schemas for data validation
+- Modular structure (config, models, dependencies, routers, schemas)
+- CORS and security headers middleware
 
-## Project Structure 🗂️
+---
+
+## Project Structure
+
 ```
-project/
+FastAPI-Project-Starter/
 ├── app/
-│   ├── core/        # Configuration and security
-│   ├── database/    # Database models and sessions
-│   ├── dependencies/ # Authentication and utilities
-│   ├── routers/     # API endpoints (users, auth, etc)
-│   ├── schemas/   # Pydantic models
-│   └── main.py      # Application entry point
-├── tests/           # Unit and integration tests
-├── migrations/      # Alembic migration scripts
-├── Dockerfile       # Container configuration
-└── docker-compose.yml # Multi-container setup
+│   ├── core/          # Configurations & security settings
+│   ├── database/      # Database models and session
+│   ├── dependencies/  # Authentication and reusable dependencies
+│   ├── routers/       # API endpoints (users, items, etc.)
+│   ├── schemas/       # Pydantic models for data validation
+│   └── main.py        # Application entry point
+├── tests/             # Pytest-based test suite
+├── Dockerfile         # Container configuration
+├── docker-compose.yml # Multi-container setup
+└── requirements.txt   # Python dependencies
 ```
 
-## New/Updated Sections
+---
 
-### Database Migrations
+## Getting Started
+
+### 1. Clone the repository
+
 ```bash
-# Initialize migrations
-alembic init -t async migrations
-
-# Create new migration
-alembic revision -m "create_users_table" --autogenerate
-
-# Upgrade database
-alembic upgrade head
+git clone https://github.com/Khanz9664/FastAPI-Project-Starter.git
+cd FastAPI-Project-Starter
 ```
 
-### Environment Variables
-Add these to your `.env` file:
+### 2. Configure Config Variables
+
+fastapi-project/app/core/config.py
+
 ```env
 DATABASE_URL=postgresql+asyncpg://user:password@localhost/dbname
 SECRET_KEY=your-secret-key-here
@@ -58,51 +67,66 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 TEST_DATABASE_URL=postgresql://test_user:test_password@localhost/test_db
 ```
 
-### API Endpoints
-**Authentication**
+### 3. Run with Docker
+
 ```bash
-POST /api/auth/token
-Content-Type: application/x-www-form-urlencoded
+docker-compose up --build
 ```
 
-**Users Management**
+### 4. Run the App Locally
+
 ```bash
-POST /api/users/ 
-Content-Type: application/json
-{
-  "email": "user@example.com",
-  "password": "securepassword",
-  "full_name": "John Doe"
-}
+uvicorn app.main:app --reload
 ```
-
-### Testing
-```bash
-# Run tests with coverage
-pytest --cov=app tests/
-
-# Run specific test file
-pytest tests/test_main.py
-```
-
-### Production Deployment
-```bash
-# Using Docker
-docker-compose -f docker-compose.prod.yml up --build
-
-# Gunicorn with Uvicorn workers
-gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:80
-```
-
-## Security Enhancements
-- Password hashing with bcrypt (salt rounds: 12)
-- Rate limiting on authentication endpoints
-- CORS configured with allowed origins
-- Security headers middleware included
 
 ---
 
-### 📫 Connect with Me
+## API Endpoints
+
+- **Authentication**
+  - `POST /api/auth/token` (form: username, password)
+- **User Management**
+  - `POST /api/users/` (register new user)
+  - `GET /api/users/me` (get current user info)
+- **Items**
+  - `GET /api/items/` (list example items)
+
+Interactive docs available at `/docs` and `/redoc`.
+
+---
+
+## Testing
+
+Run all tests:
+
+```bash
+pytest --cov=app tests/
+```
+
+Run a specific test file:
+
+```bash
+pytest tests/test_main.py
+```
+
+---
+
+## Security
+
+- Passwords hashed with bcrypt
+- JWT-based authentication
+- CORS configuration via environment
+- Security headers middleware
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author & Contact
 
 <p align="center">
   <a href="https://instagram.com/shaddy9664">
@@ -121,3 +145,7 @@ gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:80
     <img src="https://img.shields.io/badge/Github-red" alt="Github"/>
   </a>
 </p>
+
+---
+
+If anything else in the README doesn’t match your code, let me know and I’ll tailor it further!
