@@ -4,9 +4,9 @@ from app.main import app
 client = TestClient(app)
 
 def test_read_main():
-    response = client.get("/api/")
+    response = client.get("/api/v1/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
+    assert response.json() == {"success": True, "message": "Hello World"}
 
 def test_create_user():
     user_data = {
@@ -14,7 +14,10 @@ def test_create_user():
         "password": "secret",
         "full_name": "Test User"
     }
-    response = client.post("/api/users/", json=user_data)
+    response = client.post("/api/v1/users/", json=user_data)
     assert response.status_code == 200
-    assert "email" in response.json()
+    response_data = response.json()
+    assert response_data["success"] is True
+    assert "data" in response_data
+    assert "email" in response_data["data"]
 
