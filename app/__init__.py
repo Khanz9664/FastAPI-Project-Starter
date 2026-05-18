@@ -8,4 +8,4 @@ __author__ = "Your Name"
 # Import critical components (optional)
 from .main import app
 from .core.config import settings
-from .database import engine, Base
+from .db.session import engine, Base
