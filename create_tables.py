@@ -1,5 +1,5 @@
 import asyncio
-from app.database import Base, engine
+from app.db.session import Base, engine
 
 async def create_all():
     async with engine.begin() as conn:
