@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import users, items
+from app.api.v1 import users, items
 from app.core.config import settings
-from app.database import Base, engine, connect, disconnect  # ✅ Correct imports
+from app.db.session import Base, engine, connect, disconnect  # ✅ Correct imports
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
