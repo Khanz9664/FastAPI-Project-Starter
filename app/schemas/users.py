@@ -1,9 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
-from datetime import datetime
-from app.db.session import Base
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from datetime import datetime
 
 class UserCreate(BaseModel):
     email: str
@@ -20,8 +17,7 @@ class User(BaseModel):
     full_name: Optional[str] = None
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Token(BaseModel):
     access_token: str
@@ -30,24 +26,4 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
-class Item(Base):
-    __tablename__ = "items"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    owner = relationship("UserDB", back_populates="items")
 
-class UserDB(Base):
-    __tablename__ = "users"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    full_name = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    
-    items = relationship("Item", back_populates="owner")

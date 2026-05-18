@@ -1,0 +1,28 @@
+from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
+
+class BaseConfig(BaseSettings):
+    PROJECT_NAME: str = "FastAPI Project"
+    VERSION: str = "1.0.0"
+    DESCRIPTION: str = "Full-Featured FastAPI Project"
+    API_PREFIX: str = "/api/v1"
+    
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
+    
+    # Database
+    DATABASE_URL: str
+    
+    # Security
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    
+    # CORS
+    BACKEND_CORS_ORIGINS: list[str] = ["*"]
+    
+    model_config = SettingsConfigDict(
+        case_sensitive=True,
+        env_file=".env",
+        extra="ignore"
+    )

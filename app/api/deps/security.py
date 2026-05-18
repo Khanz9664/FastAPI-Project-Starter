@@ -4,10 +4,16 @@ from jose import JWTError, jwt
 from app.core.config import settings
 from app.schemas.users import TokenData
 from app.utils.password import verify_password
+from app.db.session import get_db
+from sqlalchemy.ext.asyncio import AsyncSession
+from app.repositories.users import user_repo
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
+async def get_current_user(
+    token: str = Depends(oauth2_scheme), 
+    db: AsyncSession = Depends(get_db)
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -27,7 +33,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
         
     # Add database lookup here
-    user = await fake_get_user(email=token_data.email)
+    user = await user_repo.get_by_email(db, email=token_data.email)
     if user is None:
         raise credentials_exception
     return user
