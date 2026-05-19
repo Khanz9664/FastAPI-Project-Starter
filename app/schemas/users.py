@@ -1,9 +1,10 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional
 from datetime import datetime
+from uuid import UUID
 
 class UserCreate(BaseModel):
-    email: str
+    email: EmailStr
     password: str
     full_name: Optional[str] = None
 
@@ -12,8 +13,8 @@ class UserUpdate(BaseModel):
     password: Optional[str] = None
 
 class User(BaseModel):
-    id: int
-    email: str
+    id: UUID
+    email: EmailStr
     full_name: Optional[str] = None
     created_at: datetime
 

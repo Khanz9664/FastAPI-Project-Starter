@@ -13,10 +13,6 @@ from app.middleware.logging import StructuredLoggingMiddleware
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan manager to handle startup and shutdown events."""
-    # We will remove create_all in Phase 2 when setting up Alembic.
-    # For Phase 1, we still ensure the DB connects.
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     await connect()
     yield
     await disconnect()
