@@ -11,6 +11,8 @@ class BaseRepository(Generic[ModelType]):
 
     async def get_by_id(self, db: AsyncSession, id: Any) -> Optional[ModelType]:
         query = select(self.model).where(self.model.id == id)
+        if hasattr(self.model, 'deleted_at'):
+            query = query.where(self.model.deleted_at.is_(None))
         result = await db.execute(query)
         return result.scalar_one_or_none()
 
@@ -24,7 +26,11 @@ class BaseRepository(Generic[ModelType]):
     async def delete(self, db: AsyncSession, id: Any) -> bool:
         obj = await self.get_by_id(db, id)
         if obj:
-            db.delete(obj)
+            if hasattr(self.model, 'deleted_at'):
+                from app.models.mixins import utc_now
+                obj.deleted_at = utc_now()
+            else:
+                await db.delete(obj)
             await db.commit()
             return True
         return False

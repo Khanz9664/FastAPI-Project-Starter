@@ -1,26 +1,23 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from sqlalchemy import Uuid
 from app.db.session import Base
+from app.models.mixins import AuditMixin
 
-class User(Base):
+class User(Base, AuditMixin):
     __tablename__ = "users"
     
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    email = Column(String, unique=True, index=True, nullable=False)
+    hashed_password = Column(String, nullable=False)
     full_name = Column(String)
-    created_at = Column(DateTime, default=datetime.utcnow)
     
     items = relationship("Item", back_populates="owner")
 
-class Item(Base):
+class Item(Base, AuditMixin):
     __tablename__ = "items"
     
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
+    title = Column(String, index=True, nullable=False)
     description = Column(String)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    owner_id = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
     
     owner = relationship("User", back_populates="items")
