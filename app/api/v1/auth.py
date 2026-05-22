@@ -25,7 +25,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 @router.post("/token", response_model=Token)
-@limiter.limit("5/minute")
+@limiter.limit(settings.AUTH_RATE_LIMIT)
 async def login_for_access_token(
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),

@@ -10,7 +10,6 @@ from app.core.config import settings
 from app.core.limiter import limiter
 from app.db.session import Base, engine, connect, disconnect
 from app.middleware.logging import StructuredLoggingMiddleware
-from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
 @asynccontextmanager
@@ -32,7 +31,16 @@ app = FastAPI(
 app.state.limiter = limiter
 
 # Exception Handlers
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=429,
+        content={
+            "success": False,
+            "message": "Too many requests",
+            "error_code": "RATE_LIMIT_EXCEEDED"
+        }
+    )
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
@@ -72,7 +80,7 @@ app.include_router(users.router, prefix=settings.API_PREFIX)
 app.include_router(items.router, prefix=settings.API_PREFIX)
 
 @app.get(f"{settings.API_PREFIX}/")
-@limiter.limit("5/minute")
+@limiter.limit(settings.DEFAULT_RATE_LIMIT)
 async def read_main(request: Request):
     return {"success": True, "message": "Hello World"}
 

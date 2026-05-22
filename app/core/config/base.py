@@ -21,6 +21,10 @@ class BaseConfig(BaseSettings):
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = ["*"]
     
+    # Rate Limiting
+    AUTH_RATE_LIMIT: str = "5/minute"
+    DEFAULT_RATE_LIMIT: str = "10/minute"
+    
     model_config = SettingsConfigDict(
         case_sensitive=True,
         env_file=".env",

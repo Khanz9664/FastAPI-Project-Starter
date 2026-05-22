@@ -7,6 +7,7 @@ import enum
 
 class UserRole(str, enum.Enum):
     ADMIN = "admin"
+    MODERATOR = "moderator"
     USER = "user"
 
 class User(Base, AuditMixin):
