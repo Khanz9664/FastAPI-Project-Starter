@@ -21,3 +21,12 @@ def test_create_user():
     assert "data" in response_data
     assert "email" in response_data["data"]
 
+def test_rate_limiting():
+    # Send 6 requests, 6th should be rate limited (5/minute)
+    for _ in range(5):
+        client.get("/api/v1/")
+    
+    response = client.get("/api/v1/")
+    assert response.status_code == 429
+    assert response.json()["error"] == "Rate limit exceeded: 5 per 1 minute"
+

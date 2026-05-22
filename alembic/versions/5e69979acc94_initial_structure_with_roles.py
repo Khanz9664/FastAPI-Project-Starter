@@ -1,8 +1,8 @@
-"""initial structure
+"""initial structure with roles
 
-Revision ID: f5b0a0713f45
+Revision ID: 5e69979acc94
 Revises: 
-Create Date: 2026-05-19 22:55:55.078088
+Create Date: 2026-05-22 22:49:19.833896
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'f5b0a0713f45'
+revision: str = '5e69979acc94'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,6 +25,7 @@ def upgrade() -> None:
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('hashed_password', sa.String(), nullable=False),
     sa.Column('full_name', sa.String(), nullable=True),
+    sa.Column('role', sa.String(), nullable=False),
     sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
     sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),

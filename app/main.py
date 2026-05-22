@@ -7,8 +7,11 @@ from contextlib import asynccontextmanager
 
 from app.api.v1 import users, items, auth
 from app.core.config import settings
+from app.core.limiter import limiter
 from app.db.session import Base, engine, connect, disconnect
 from app.middleware.logging import StructuredLoggingMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,7 +29,11 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.state.limiter = limiter
+
 # Exception Handlers
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     return JSONResponse(
@@ -65,6 +72,7 @@ app.include_router(users.router, prefix=settings.API_PREFIX)
 app.include_router(items.router, prefix=settings.API_PREFIX)
 
 @app.get(f"{settings.API_PREFIX}/")
-async def read_main():
+@limiter.limit("5/minute")
+async def read_main(request: Request):
     return {"success": True, "message": "Hello World"}
 
