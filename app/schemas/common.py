@@ -8,3 +8,16 @@ class APIResponse(BaseModel, Generic[T]):
     message: str
     data: Optional[T] = None
     error_code: Optional[str] = None
+
+class PaginationMeta(BaseModel):
+    total: int
+    skip: int
+    limit: int
+    has_next: bool
+
+class PaginatedData(BaseModel, Generic[T]):
+    items: list[T]
+    pagination: PaginationMeta
+
+class PaginatedResponse(APIResponse[PaginatedData[T]]):
+    pass
