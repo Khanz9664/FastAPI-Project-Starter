@@ -1,0 +1,6 @@
+from fastapi import Query
+from pydantic import BaseModel
+
+class PaginationParams(BaseModel):
+    skip: int = Query(0, ge=0, description="Number of records to skip")
+    limit: int = Query(20, ge=1, le=100, description="Number of records to return (max 100)")

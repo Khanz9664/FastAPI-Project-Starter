@@ -54,3 +54,23 @@ def test_rbac_admin_user_roles():
     # Clean up override
     app.dependency_overrides.clear()
 
+def test_pagination_limits():
+    from unittest.mock import AsyncMock, patch
+    
+    # Test valid pagination by mocking the repository call to avoid asyncpg context issues
+    with patch("app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock) as mock_get_multi:
+        mock_get_multi.return_value = ([], 0)
+        
+        response = client.get("/api/v1/items/?skip=0&limit=5")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        assert "total" in data["data"]
+        assert "items" in data["data"]
+        assert data["data"]["limit"] == 5
+    
+    # Test exceeding max limit
+    response_large = client.get("/api/v1/items/?skip=0&limit=150")
+    assert response_large.status_code == 422
+    assert "Validation Error" in response_large.json()["message"]
+
