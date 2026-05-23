@@ -5,7 +5,7 @@ from typing import Optional
 from app.db.session import get_db
 from app.repositories.items import item_repo
 from app.schemas.items import Item as ItemSchema
-from app.schemas.common import PaginatedResponse, PaginatedData
+from app.schemas.common import PaginatedResponse, PaginatedData, PaginationMeta
 from app.api.deps.pagination import PaginationParams
 
 router = APIRouter(prefix="/items", tags=["items"])
@@ -22,7 +22,10 @@ async def list_items(
         skip=pagination.skip, 
         limit=pagination.limit,
         search_field="title",
-        search_query=search
+        search_query=search,
+        searchable_fields={"title", "description"},
+        sort_by=pagination.sort_by,
+        sort_order=pagination.sort_order
     )
     
     return PaginatedResponse(
@@ -30,8 +33,11 @@ async def list_items(
         message="Items retrieved successfully",
         data=PaginatedData(
             items=[ItemSchema.model_validate(item) for item in items],
-            total=total,
-            skip=pagination.skip,
-            limit=pagination.limit
+            pagination=PaginationMeta(
+                total=total,
+                skip=pagination.skip,
+                limit=pagination.limit,
+                has_next=(pagination.skip + pagination.limit) < total
+            )
         )
     ) 

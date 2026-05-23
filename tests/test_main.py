@@ -65,12 +65,26 @@ def test_pagination_limits():
         assert response.status_code == 200
         data = response.json()
         assert data["success"] is True
-        assert "total" in data["data"]
+        assert "pagination" in data["data"]
         assert "items" in data["data"]
-        assert data["data"]["limit"] == 5
+        assert data["data"]["pagination"]["limit"] == 5
     
     # Test exceeding max limit
     response_large = client.get("/api/v1/items/?skip=0&limit=150")
     assert response_large.status_code == 422
     assert "Validation Error" in response_large.json()["message"]
+
+def test_empty_search():
+    from unittest.mock import AsyncMock, patch
+    
+    # Test empty search results to ensure schema consistency
+    with patch("app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock) as mock_get_multi:
+        mock_get_multi.return_value = ([], 0)
+        
+        response = client.get("/api/v1/items/?search=doesnotexist")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["success"] is True
+        assert data["data"]["items"] == []
+        assert data["data"]["pagination"]["total"] == 0
 
