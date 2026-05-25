@@ -20,6 +20,11 @@ async def create_user(request: Request, user: UserCreate, db: AsyncSession = Dep
     db.add(db_user)
     await db.commit()
     await db.refresh(db_user)
+    
+    # Enqueue background task (e.g., welcome email)
+    if hasattr(request.app.state, "arq_pool"):
+        await request.app.state.arq_pool.enqueue_job("dummy_background_task", db_user.email)
+        
     return APIResponse(
         success=True,
         message="User created successfully",

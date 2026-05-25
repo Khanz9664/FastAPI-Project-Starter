@@ -10,13 +10,20 @@ from app.core.config import settings
 from app.core.limiter import limiter
 from app.db.session import Base, engine, connect, disconnect
 from app.middleware.logging import StructuredLoggingMiddleware
+from app.core.redis import redis_client
+from arq import create_pool
+from arq.connections import RedisSettings
 from slowapi.errors import RateLimitExceeded
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan manager to handle startup and shutdown events."""
     await connect()
+    await redis_client.connect(settings.REDIS_URL)
+    app.state.arq_pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
     yield
+    await redis_client.disconnect()
+    await app.state.arq_pool.close()
     await disconnect()
 
 

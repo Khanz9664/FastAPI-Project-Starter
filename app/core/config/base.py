@@ -25,6 +25,9 @@ class BaseConfig(BaseSettings):
     AUTH_RATE_LIMIT: str = "5/minute"
     DEFAULT_RATE_LIMIT: str = "10/minute"
     
+    # Redis
+    REDIS_URL: str = "redis://localhost:6379/0"
+    
     model_config = SettingsConfigDict(
         case_sensitive=True,
         env_file=".env",
