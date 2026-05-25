@@ -2,15 +2,16 @@ import asyncio
 from typing import Any
 from arq.connections import RedisSettings
 from app.core.config import settings
+from app.schemas.users import WelcomeEmailPayload
 
-async def dummy_background_task(ctx: dict, user_email: str) -> str:
+async def send_welcome_email_task(ctx: dict, payload: WelcomeEmailPayload) -> str:
     """
-    Dummy background task to simulate sending an email or processing data.
+    Background task to simulate sending a welcome email.
     """
-    print(f"Starting background processing for user: {user_email}")
+    print(f"Starting welcome email job for user: {payload.email}")
     await asyncio.sleep(2)  # Simulate network or processing delay
-    print(f"Finished processing for user: {user_email}")
-    return f"Processed {user_email}"
+    print(f"Successfully sent welcome email to: {payload.email}")
+    return f"Processed {payload.email}"
 
 async def startup(ctx: dict):
     print("Worker starting up...")
@@ -19,7 +20,8 @@ async def shutdown(ctx: dict):
     print("Worker shutting down...")
 
 class WorkerSettings:
-    functions = [dummy_background_task]
+    functions = [send_welcome_email_task]
     redis_settings = RedisSettings.from_dsn(settings.REDIS_URL)
     on_startup = startup
     on_shutdown = shutdown
+    max_tries = 3

@@ -8,6 +8,7 @@ from app.api.deps.security import get_current_user, RoleChecker
 from app.utils.password import get_password_hash
 from app.core.limiter import limiter
 from app.core.config import settings
+from app.schemas.users import WelcomeEmailPayload
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -23,7 +24,8 @@ async def create_user(request: Request, user: UserCreate, db: AsyncSession = Dep
     
     # Enqueue background task (e.g., welcome email)
     if hasattr(request.app.state, "arq_pool"):
-        await request.app.state.arq_pool.enqueue_job("dummy_background_task", db_user.email)
+        payload = WelcomeEmailPayload(email=db_user.email, full_name=db_user.full_name)
+        await request.app.state.arq_pool.enqueue_job("send_welcome_email_task", payload)
         
     return APIResponse(
         success=True,
