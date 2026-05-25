@@ -9,14 +9,22 @@ from app.api.v1 import users, items, auth
 from app.core.config import settings
 from app.core.limiter import limiter
 from app.db.session import Base, engine, connect, disconnect
+from sqlalchemy import text
 from app.middleware.logging import StructuredLoggingMiddleware
+from app.core.redis import redis_client
+from arq import create_pool
+from arq.connections import RedisSettings
 from slowapi.errors import RateLimitExceeded
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan manager to handle startup and shutdown events."""
     await connect()
+    await redis_client.connect(settings.REDIS_URL)
+    app.state.arq_pool = await create_pool(RedisSettings.from_dsn(settings.REDIS_URL))
     yield
+    await redis_client.disconnect()
+    await app.state.arq_pool.close()
     await disconnect()
 
 
@@ -83,4 +91,28 @@ app.include_router(items.router, prefix=settings.API_PREFIX)
 @limiter.limit(settings.DEFAULT_RATE_LIMIT)
 async def read_main(request: Request):
     return {"success": True, "message": "Hello World"}
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint to verify infrastructure components."""
+    status = {"status": "healthy", "services": {"database": "ok", "redis": "ok"}}
+    
+    try:
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+    except Exception:
+        status["services"]["database"] = "failed"
+        status["status"] = "unhealthy"
+        
+    try:
+        if not redis_client.redis or not await redis_client.redis.ping():
+            raise Exception("Redis not responding")
+    except Exception:
+        status["services"]["redis"] = "failed"
+        status["status"] = "unhealthy"
+        
+    return JSONResponse(
+        status_code=200 if status["status"] == "healthy" else 503,
+        content=status
+    )
 
