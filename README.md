@@ -109,25 +109,18 @@ Features such as RBAC, Redis-backed background jobs, health probes, Prometheus m
 The project follows a layered architecture to maintain separation of concerns and long-term maintainability.
 
 ```mermaid
-flowchart TD
-
-Client[Client Request]
-Router[API Router]
-Service[Service Layer]
-Repository[Repository Layer]
-Database[(PostgreSQL)]
-
-Redis[(Redis)]
-Worker[ARQ Worker]
-
-Client --> Router
-Router --> Service
-Service --> Repository
-Repository --> Database
-
-Service --> Redis
-Redis --> Worker
-Worker --> Database
+graph TD
+    Client([Client]) -->|HTTP Request| API[FastAPI App]
+    API -->|JWT Validated| Auth[Security Dependency]
+    Auth --> Router[API Router]
+    
+    subgraph Core Infrastructure
+        Router -->|Delegates logic| Repo[Repository Pattern]
+        Repo -->|Async ORM| DB[(PostgreSQL)]
+        Router -->|Background Task| Queue{Redis Broker}
+        Queue --> Worker[ARQ Async Worker]
+        Worker -.->|DB Access| DB
+    end
 ```
 
 ### Request Flow
