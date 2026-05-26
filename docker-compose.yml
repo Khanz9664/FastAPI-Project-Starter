@@ -1,25 +1,66 @@
 version: '3.8'
 
 services:
-  web:
+  api:
     build: .
     ports:
-      - "80:80"
+      - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://user:password@db/appdb
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/fastapi_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-super-secret-key-for-development
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+
+  worker:
+    build: .
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/fastapi_db
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-super-secret-key-for-development
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: arq app.worker.WorkerSettings
+    volumes:
+      - .:/app
 
   db:
-    image: postgres:13
+    image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=appdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=fastapi_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
+  redis_data:
