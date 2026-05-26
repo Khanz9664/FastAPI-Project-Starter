@@ -1,24 +1,56 @@
-# 🚀 FastAPI Project Starter  
+# 🚀 Production-Ready FastAPI Boilerplate
 [![Test FastAPI Application](https://github.com/Khanz9664/FastAPI-Project-Starter/actions/workflows/test.yml/badge.svg)](https://github.com/Khanz9664/FastAPI-Project-Starter/actions/workflows/test.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)  
-[![Python](https://img.shields.io/badge/Python-3.9+-brightgreen?style=for-the-badge&logo=python)](https://www.python.org)  
+[![Python](https://img.shields.io/badge/Python-3.12+-brightgreen?style=for-the-badge&logo=python)](https://www.python.org)  
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-> A production-ready FastAPI template with JWT authentication, async PostgreSQL, Docker support, and modular architecture. Built for secure, scalable API development.
+> **Async • Secure • Scalable • Dockerized**
+> 
+> A robust, battle-tested FastAPI template engineered for production. It combines modern async Python best practices with a highly modular architecture, giving you a deployment-ready foundation in seconds.
 
 ---
 
-## 📦 Features
+## ⚡ Feature Matrix
 
-| Feature                | Description                                                                 |
-|------------------------|-----------------------------------------------------------------------------|
-| 🔐 Authentication       | JWT token-based authentication with bcrypt password hashing                  |
-| 🧱 Architecture         | Modular structure with separation of concerns (config, models, routers)    |
-| 🐍 Async PostgreSQL    | SQLAlchemy + asyncpg for non-blocking database operations                  |
-| 🐳 Docker              | Containerized setup with Docker Compose                                    |
-| 🧪 Testing              | Pytest with coverage reports                                               |
-| 📜 Docs                | Auto-generated Swagger (`/docs`) and ReDoc (`/redoc`)                      |
-| 🔐 Security             | CORS middleware, rate limiting, and secure headers                          |
+| Feature | Status | Description |
+|---|---|---|
+| **FastAPI + Pydantic V2** | ✅ | Blazing fast routing and strict schema validation |
+| **Async PostgreSQL** | ✅ | SQLAlchemy 2.0 with `asyncpg` for non-blocking DB operations |
+| **Authentication** | ✅ | Secure JWT token issuance with Bcrypt password hashing |
+| **RBAC** | ✅ | Role-Based Access Control (Admin, Moderator, User) out of the box |
+| **Pagination & Search** | ✅ | Native, generic offset pagination and text search in repositories |
+| **Redis Caching** | ✅ | High-performance async caching via `redis.asyncio` |
+| **ARQ Workers** | ✅ | Pure `asyncio` background job queue (No Celery overhead!) |
+| **Rate Limiting** | ✅ | Built-in `slowapi` to prevent abuse (429 handling) |
+| **Observability** | ✅ | `/health`, `/live`, `/ready` and Prometheus `/metrics` probes |
+| **Dockerized** | ✅ | Multi-stage Dockerfile + Docker Compose for the entire stack |
+| **CI/CD Quality Gates** | ✅ | GitHub Actions enforcing Pytest, Black, Isort, Flake8, and Mypy |
+
+---
+
+## 🏗️ Architecture Flow
+
+```mermaid
+graph TD
+    Client([Client]) -->|HTTP Request| API[FastAPI App]
+    API -->|JWT Validated| Auth[Security Dependency]
+    Auth --> Router[API Router]
+    
+    subgraph Core Infrastructure
+        Router -->|Delegates logic| Repo[Repository Pattern]
+        Repo -->|Async ORM| DB[(PostgreSQL)]
+        Router -->|Background Task| Queue{Redis Broker}
+        Queue --> Worker[ARQ Async Worker]
+        Worker -.->|DB Access| DB
+    end
+```
+
+---
+
+## 🤔 Why ARQ over Celery?
+While Celery is the industry standard for background workers, it is fundamentally synchronous. Using Celery in a fully async FastAPI environment often leads to complex workarounds just to await database queries. 
+
+We chose **[ARQ](https://arq-docs.helpmanual.io/)** (created by the author of Pydantic) because it is a natively `asyncio` job queue backed by Redis. This means your API and your Workers share the exact same `async/await` syntax, allowing seamless code reuse and significantly lower overhead.
 
 ---
 
@@ -162,4 +194,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Author**: Shahid Ul Islam  
 - **GitHub**: [@Khanz9664](https://github.com/Khanz9664)  
 - **LinkedIn**: [Profile](https://linkedin.com/in/shahid-ul-islam-13650998)  
-- **Portfolio**: [khanz9664.github.io](https://khanz9664.github.io/portfolio/)
+- **Portfolio**: [khanz9664.github.io/portfolio/](https://khanz9664.github.io/portfolio/)

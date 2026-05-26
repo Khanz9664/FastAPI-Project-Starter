@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 from slowapi.errors import RateLimitExceeded
 from sqlalchemy import text
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -33,8 +34,27 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description=settings.DESCRIPTION,
+    description="""
+    A production-ready FastAPI boilerplate featuring:
+    * **Async PostgreSQL** database operations
+    * **Redis** caching and **ARQ** background workers
+    * **JWT Authentication** and **RBAC**
+    * **Pagination** and generic repositories
+    """,
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
+    contact={
+        "name": "Shahid Ul Islam",
+        "url": "https://khanz9664.github.io/portfolio/",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+    openapi_tags=[
+        {"name": "auth", "description": "Authentication and JWT issuance operations."},
+        {"name": "users", "description": "User management and Role-Based Access Control (RBAC)."},
+        {"name": "items", "description": "Generic items management demonstrating pagination and search."},
+    ],
     lifespan=lifespan,
 )
 
@@ -101,6 +121,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Prometheus Metrics
+Instrumentator().instrument(app).expose(app, include_in_schema=True, tags=["observability"])
+
 # Include routers
 app.include_router(auth.router, prefix=settings.API_PREFIX)
 app.include_router(users.router, prefix=settings.API_PREFIX)
@@ -113,7 +136,7 @@ async def read_main(request: Request):
     return {"success": True, "message": "Hello World"}
 
 
-@app.get("/health")
+@app.get("/health", tags=["observability"])
 async def health_check():
     """Health check endpoint to verify infrastructure components."""
     status = {"status": "healthy", "services": {"database": "ok", "redis": "ok"}}
@@ -133,3 +156,15 @@ async def health_check():
         status["status"] = "unhealthy"
 
     return JSONResponse(status_code=200 if status["status"] == "healthy" else 503, content=status)
+
+
+@app.get("/live", tags=["observability"])
+async def liveness_probe():
+    """Kubernetes liveness probe. Indicates if the application is running."""
+    return {"status": "alive"}
+
+
+@app.get("/ready", tags=["observability"])
+async def readiness_probe():
+    """Kubernetes readiness probe. Same as /health but used by orchestration."""
+    return await health_check()
