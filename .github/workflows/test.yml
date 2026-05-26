@@ -50,6 +50,13 @@ jobs:
         pip install -r requirements.txt
         pip install pytest httpx
         
+    - name: Code Quality (Lint & Format)
+      run: |
+        black --check app/ tests/
+        isort --check-only app/ tests/
+        flake8 app/ tests/
+        mypy app/ tests/
+        
     - name: Run Alembic Migrations
       env:
         DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/fastapi_test_db

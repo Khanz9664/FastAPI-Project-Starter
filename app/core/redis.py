@@ -1,6 +1,8 @@
 import json
 from typing import Any, Optional
+
 from redis.asyncio import Redis
+
 
 class RedisClient:
     def __init__(self):
@@ -27,5 +29,6 @@ class RedisClient:
     async def delete_cache(self, key: str):
         if self.redis:
             await self.redis.delete(key)
+
 
 redis_client = RedisClient()

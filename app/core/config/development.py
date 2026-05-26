@@ -1,5 +1,6 @@
 from .base import BaseConfig
 
+
 class DevelopmentConfig(BaseConfig):
     ENVIRONMENT: str = "development"
     DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost/dbname"

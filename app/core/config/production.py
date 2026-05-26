@@ -1,5 +1,6 @@
 from .base import BaseConfig
 
+
 class ProductionConfig(BaseConfig):
     ENVIRONMENT: str = "production"
     # Ensure these are provided by the actual production environment variables

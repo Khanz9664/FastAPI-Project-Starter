@@ -1,4 +1,5 @@
 # 🚀 FastAPI Project Starter  
+[![Test FastAPI Application](https://github.com/Khanz9664/FastAPI-Project-Starter/actions/workflows/test.yml/badge.svg)](https://github.com/Khanz9664/FastAPI-Project-Starter/actions/workflows/test.yml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)  
 [![Python](https://img.shields.io/badge/Python-3.9+-brightgreen?style=for-the-badge&logo=python)](https://www.python.org)  
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
@@ -76,10 +77,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 pip install -r requirements.txt
 ```
 
-### 4. Run with Docker (Recommended)
+### 4. Docker Quick Start (Recommended)
+Spin up the entire stack (API, PostgreSQL, Redis, Worker) instantly:
 ```bash
 docker-compose up --build
 ```
+Then visit [http://localhost:8000/docs](http://localhost:8000/docs) to view the auto-generated Swagger UI!
 
 ### 5. Run Locally
 ```bash
