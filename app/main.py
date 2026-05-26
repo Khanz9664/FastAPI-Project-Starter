@@ -132,6 +132,4 @@ async def health_check():
         status["services"]["redis"] = "failed"
         status["status"] = "unhealthy"
 
-    return JSONResponse(
-        status_code=200 if status["status"] == "healthy" else 503, content=status
-    )
+    return JSONResponse(status_code=200 if status["status"] == "healthy" else 503, content=status)

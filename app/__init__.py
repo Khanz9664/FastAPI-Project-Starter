@@ -7,5 +7,6 @@ __author__ = "Your Name"
 
 from .core.config import settings
 from .db.session import Base, engine
+
 # Import critical components (optional)
 from .main import app

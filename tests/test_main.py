@@ -65,9 +65,7 @@ def test_pagination_limits():
     from unittest.mock import AsyncMock, patch
 
     # Test valid pagination by mocking the repository call to avoid asyncpg context issues
-    with patch(
-        "app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock
-    ) as mock_get_multi:
+    with patch("app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock) as mock_get_multi:
         mock_get_multi.return_value = ([], 0)
 
         response = client.get("/api/v1/items/?skip=0&limit=5")
@@ -88,9 +86,7 @@ def test_empty_search():
     from unittest.mock import AsyncMock, patch
 
     # Test empty search results to ensure schema consistency
-    with patch(
-        "app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock
-    ) as mock_get_multi:
+    with patch("app.api.v1.items.item_repo.get_multi", new_callable=AsyncMock) as mock_get_multi:
         mock_get_multi.return_value = ([], 0)
 
         response = client.get("/api/v1/items/?search=doesnotexist")
@@ -105,11 +101,10 @@ def test_redis_cache():
     import json
     from unittest.mock import AsyncMock, patch
 
-    with patch(
-        "app.core.redis.RedisClient.set_cache", new_callable=AsyncMock
-    ) as mock_set, patch(
-        "app.core.redis.RedisClient.get_cache", new_callable=AsyncMock
-    ) as mock_get:
+    with (
+        patch("app.core.redis.RedisClient.set_cache", new_callable=AsyncMock) as mock_set,
+        patch("app.core.redis.RedisClient.get_cache", new_callable=AsyncMock) as mock_get,
+    ):
 
         # Test cache hit
         mock_get.return_value = {"cached": "data"}

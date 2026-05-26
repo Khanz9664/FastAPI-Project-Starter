@@ -35,12 +35,7 @@ class BaseRepository(Generic[ModelType]):
         if hasattr(self.model, "deleted_at"):
             query = query.where(self.model.deleted_at.is_(None))
 
-        if (
-            search_field
-            and search_query
-            and searchable_fields
-            and search_field in searchable_fields
-        ):
+        if search_field and search_query and searchable_fields and search_field in searchable_fields:
             if hasattr(self.model, search_field):
                 column = getattr(self.model, search_field)
                 if hasattr(column, "ilike"):

@@ -29,8 +29,6 @@ class Item(Base, AuditMixin):
 
     title = Column(String, index=True, nullable=False)
     description = Column(String)
-    owner_id = Column(
-        Uuid(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True
-    )
+    owner_id = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
 
     owner = relationship("User", back_populates="items")
