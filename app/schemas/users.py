@@ -17,6 +17,12 @@ class UserCreate(BaseModel):
     password: str
     full_name: Optional[str] = None
 
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {"email": "jane.doe@example.com", "password": "SuperSecretPassword123!", "full_name": "Jane Doe"}
+        }
+    )
+
 
 class WelcomeEmailPayload(BaseModel):
     email: EmailStr

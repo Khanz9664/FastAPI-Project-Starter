@@ -5,13 +5,26 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict
 
 
-class ItemCreate(BaseModel):
+class ItemBase(BaseModel):
     title: str
     description: Optional[str] = None
 
 
-class ItemUpdate(BaseModel):
+class ItemCreate(ItemBase):
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "title": "Machine Learning Model Pipeline",
+                "description": "A robust automated pipeline for training and deploying XGBoost models.",
+            }
+        }
+    )
+
+
+class ItemUpdate(ItemBase):
     title: Optional[str] = None
+
+    model_config = ConfigDict(json_schema_extra={"example": {"title": "Updated ML Pipeline"}})
     description: Optional[str] = None
 
 
