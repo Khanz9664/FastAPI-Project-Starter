@@ -1,7 +1,8 @@
+from typing import Optional
+
 from fastapi import Query
 from pydantic import BaseModel
 
-from typing import Optional
 
 class PaginationParams(BaseModel):
     skip: int = Query(0, ge=0, description="Number of records to skip")

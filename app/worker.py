@@ -1,8 +1,11 @@
 import asyncio
 from typing import Any
+
 from arq.connections import RedisSettings
+
 from app.core.config import settings
 from app.schemas.users import WelcomeEmailPayload
+
 
 async def send_welcome_email_task(ctx: dict, payload: WelcomeEmailPayload) -> str:
     """
@@ -13,11 +16,14 @@ async def send_welcome_email_task(ctx: dict, payload: WelcomeEmailPayload) -> st
     print(f"Successfully sent welcome email to: {payload.email}")
     return f"Processed {payload.email}"
 
+
 async def startup(ctx: dict):
     print("Worker starting up...")
 
+
 async def shutdown(ctx: dict):
     print("Worker shutting down...")
+
 
 class WorkerSettings:
     functions = [send_welcome_email_task]

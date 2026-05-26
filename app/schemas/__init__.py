@@ -1,9 +1,13 @@
 # Group related schemas
-from .users import UserCreate, UserUpdate, User, Token
-from .items import ItemCreate, ItemUpdate, Item
+from .items import Item, ItemCreate, ItemUpdate
+from .users import Token, User, UserCreate, UserUpdate
 
 __all__ = [
-    "UserCreate", "UserUpdate", "User", 
-    "ItemCreate", "ItemUpdate", "Item",
-    "Token"
+    "UserCreate",
+    "UserUpdate",
+    "User",
+    "ItemCreate",
+    "ItemUpdate",
+    "Item",
+    "Token",
 ]
