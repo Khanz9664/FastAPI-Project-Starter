@@ -194,4 +194,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Author**: Shahid Ul Islam  
 - **GitHub**: [@Khanz9664](https://github.com/Khanz9664)  
 - **LinkedIn**: [Profile](https://linkedin.com/in/shahid-ul-islam-13650998)  
-- **Portfolio**: [khanz9664.github.io](https://khanz9664.github.io/portfolio/)
+- **Portfolio**: [khanz9664.github.io/portfolio/](https://khanz9664.github.io/portfolio/)
